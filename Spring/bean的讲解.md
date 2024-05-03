@@ -19,12 +19,34 @@ NoSuchBeanDefinitionException: No bean named 'bookServiceImpl' available
  ```
  
 - 为什么bean默认是单例的呢？
-- 适合交给容器进行管理的bean
+- 适合交给容器进行管理的bean (可以反复用的)
     - 表现层对象
     - 业务层对象
     - 数据层对象
     - 工具对象
-- 不适合交给容器进行管理的bean
+- 不适合交给容器进行管理的bean (有状态的，内部要记录成员状态属性值)
     - 封装实体的域对象
 
- 
+bean实例化
+bean本质上就是对象，创建bean使用构造方法完成
+
+实例化bean的三种方式 → 构造方法(常用)
+
+- 提供可访问的构造方法
+
+    ```java
+    public class BookDaoImpl implements BookDao {
+        // 如果无参构造方法不存在，则会报错
+        public BookDaoImpl(){
+            System.out.println("book dao constructor is running ...");
+        }
+    
+        public void save() {
+            System.out.println("book dao save ...");
+        }
+    }
+    ```
+- 配置
+    ```xml
+    <bean id = "bookdao" class="com.gov.spstubeaninstance.dao.impl.BookDaoImpl" />
+    ```
