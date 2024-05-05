@@ -30,7 +30,8 @@ NoSuchBeanDefinitionException: No bean named 'bookServiceImpl' available
 bean实例化
 bean本质上就是对象，创建bean使用构造方法完成
 
-实例化bean的三种方式 → 构造方法(常用)
+实例化bean的三种方式 
+##### 方式一. 构造方法(常用)
 
 - 提供可访问的构造方法
 
@@ -50,3 +51,98 @@ bean本质上就是对象，创建bean使用构造方法完成
     ```xml
     <bean id = "bookdao" class="com.gov.spstubeaninstance.dao.impl.BookDaoImpl" />
     ```
+
+##### 方式二. 使用静态工厂实例化(了解即可)
+- 静态工厂
+    ```java
+    public static OrderDao getOrderDao(){
+        return new OrderDaoImpl();
+
+    }
+    ```
+- 配置
+    ```xml
+    <!--  方式二. 使用静态工厂实例化bean  -->
+    <bean id = "orderDao" class = "com.gov.spstubeaninstance.factory.OrderDaoFactory" factory-method="getOrderDao"/>
+    ```
+    
+    
+##### 方式三. 使用实例工厂实例化(了解即可)
+原版毫无意义 不写了 他妈的 懒了, 但是通过FactoryBean改版的必须要掌握，具体如下：
+- FactoryBean
+```java
+public class UserDaoFactoryBean implements FactoryBean<UserDao> {
+    @Override
+    public UserDao getObject() throws Exception {
+        return new UserDaoImpl();
+    }
+
+    @Override
+    public Class<?> getObjectType() {
+        return UserDao.class;
+    }
+}
+```
+
+- 配置
+```xml
+    <!--  方式四. 使用FactoryBean实例化bean  -->
+    <bean id = "userDaoByBean" class = "com.gov.spstubeaninstance.factory.UserDaoFactoryBean"/>
+```
+
+ 
+ bean的生命周期
+- 声明周期 从创建到消亡的过程
+- bean生命周期 bean从创建到销毁的整体过程
+- bean生命周期控制，在bean创建后到销毁前做一些事情
+
+生命周期是通过bean的init-method属性 和 destroy-method属性来进行控制，指明处理的方法，例如:
+- 代码中补充生命周期控制函数
+```java
+public class BookDaoImpl implements BookDao {
+    public void save() {
+        System.out.println("book dao save ...");
+    }
+
+    /** 表示bean初始化对应的操作 */
+    public void init(){
+        System.out.println("init ...");
+    }
+
+    /** 表示bean销毁前对应的操作 */
+    public void destroy(){
+        System.out.println("destroy ...");
+
+    }
+}
+```
+- xml中配置声明周期控制方法
+```xml
+<bean id = "bookDao" class = "com.gov.spstubeanlifecycle.dao.impl.BookDaoImpl" init-method="init" destroy-method="destroy"/>
+```
+但上述方法比较暴力。
+ 
+推荐使用接口来控制声明周期，具体如下: 
+```java
+public class BookserviceImpl implements BookService, InitializingBean, DisposableBean {
+    private BookDao bookDao;
+
+    public void setBookDao(BookDao bookDao) {
+        System.out.println("set property ...");
+        this.bookDao = bookDao;
+    }
+
+    public void save()  {
+        System.out.println("book service save ...");
+        bookDao.save();
+    }
+
+
+    public void destroy() throws Exception {
+        System.out.println("book service destroy ...");
+    }
+    public void afterPropertiesSet() throws Exception {
+        System.out.println("book service init ...");
+    }
+}
+```
