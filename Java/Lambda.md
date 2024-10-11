@@ -12,4 +12,4 @@
 - **函数体** 在 `->` 之后。在这个例子中，函数体是 `name.length() > 3`，它返回一个布尔值。
 
 Lambda 表达式常用于实现函数式接口（Functional Interface），这是一个只定义了一个抽象方法的接口。
-在这个例子中，Lambda 表达式用于实现 Predicate<String> 接口，该接口定义了一个方法 test(T t)，它接受一个参数并返回一个布尔值。name -> name.length() > 3 就是这个 test 方法的一个实现。
+在这个例子中，Lambda 表达式用于实现 Predicate<String> 接口，该接口定义了一个方法 test(T t)，它接受一个参数并返回一个布尔值。name -> name.length() > 3 就是这个 test 方法的一个实现。 
